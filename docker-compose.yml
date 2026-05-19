@@ -1,0 +1,25 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    env_file:
+      - .env
+    environment:
+      DATABASE_PATH: /data/pnn.sqlite3
+    ports:
+      - "8000:8000"
+    volumes:
+      - pnn-data:/data
+
+  bot:
+    build:
+      context: ./bot
+    env_file:
+      - .env
+    environment:
+      PORT: 3000
+    ports:
+      - "3000:3000"
+
+volumes:
+  pnn-data:

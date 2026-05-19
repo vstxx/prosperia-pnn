@@ -1,0 +1,56 @@
+services:
+  - type: web
+    name: prosperia-pnn-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: starter
+    healthCheckPath: /health
+    disk:
+      name: pnn-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_PATH
+        value: /data/pnn.sqlite3
+      - key: PNN_SHARED_SECRET
+        sync: false
+      - key: NEWS_SCORE_THRESHOLD
+        value: "65"
+      - key: AI_CONFIDENCE_THRESHOLD
+        value: "60"
+      - key: ANALYSIS_WINDOW_MINUTES
+        value: "10"
+      - key: MIN_RELATED_MESSAGES
+        value: "2"
+      - key: FORCE_DRAFTS
+        value: "false"
+      - key: AI_DRAFTS_ENABLED
+        value: "false"
+      - key: LLM_PROVIDER
+        value: openrouter
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_MODEL
+        value: meta-llama/llama-3.1-8b-instruct:free
+
+  - type: web
+    name: prosperia-pnn-bot
+    runtime: docker
+    dockerfilePath: ./bot/Dockerfile
+    dockerContext: ./bot
+    plan: starter
+    healthCheckPath: /
+    envVars:
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: CLIENT_ID
+        sync: false
+      - key: GUILD_ID
+        sync: false
+      - key: PNN_REVIEW_CHANNEL_ID
+        sync: false
+      - key: PNN_NEWS_CHANNEL_ID
+        sync: false
+      - key: PNN_EDITOR_ROLE_ID
+        sync: false
